@@ -1,14 +1,23 @@
 const express = require('express');
 const app = express();
+app.use(express.json());
+express.urlencoded({limit: '5mb', extended: true});
+
 const cors = require('cors');
+app.use(cors());
+
+const helmet = require('helmet');
+app.use(helmet());
+
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database('kirjat.db')
 
-app.use(express.json());
-app.use(cors());
-app.listen(8080, () =>{console.log('Palvelin toimii osoitteessa localhost:8080');})
+app.listen(8080, () =>{
+    console.log('Palvelin toimii osoitteessa localhost:8080');
+})
 
-app.get('/', (req, res, next) => { return res.send({error:false, message: 'Toimii!'})
+app.get('/', (req, res, next) => { 
+    return res.send({error:false, message: 'Toimii!'})
 })
 
 // Hae kaikki kirjat tietokannasta
@@ -16,9 +25,9 @@ app.get('/kirja/all', (req, res, next) => {
     db.all('SELECT * FROM Kirja', (error, results) => { // db.all eli haetaan kaikki
         if (error) throw error; // Virheen testausta
 
-        if (typeof(result) == 'undefined') {
+        /*if (typeof(result) == 'undefined') {
             return res.status(200).send({}); // Tyhjä objekti palautetaan, jos tietokannasta ei löydy riviä
-        }
+        }*/
         return res.status(200).json(results); // Listataan tietokannan sisältö
     })
 })
@@ -49,14 +58,15 @@ app.get('/kirja/delete/:id', (req, res, next) => {
 })
 
 // Tietokantaan kirjan lisäämminen
-app.post('/kirja/add', (req, res, next) => {
-    let uusiKirja = req.body;
+app.post('/kirja/add', function (req, res) {
+    let tap = req.body;
+    //console.log(req);
+    console.log(tap);
     
-    db.run('INSERT INTO Kirja (title, author, description) VALUES (?, ?, ?)',
-    [uusiKirja.title, uusiKirja.author, uusiKirja.description], (error, result) => {
+    db.run('INSERT INTO Kirja (title, author, description) VALUES (?, ?, ?)', [tap.title, tap.author, tap.description], function (error, result) {
         if (error) throw error;
 
-        return res.status(200).json({count:1});
+        return res.status(200).json({count: this.changes});
     })
 })
 
