@@ -43,7 +43,7 @@ app.get('/kirja/:id', (req, res, next) => {
 })
 
 // Poista yksi kirja ID:n mukaisesti
-app.get('/kirja/delete/:id', (req, res, next) => {
+app.delete('/kirja/delete/:id', (req, res, next) => {
     let id = req.params.id; // Ottaa :id parametrin muuttujaksi
 
     db.run('DELETE FROM kirja WHERE id=?', [id], function (error, result) { //db.run eli ajetaan tietokantaan toiminto

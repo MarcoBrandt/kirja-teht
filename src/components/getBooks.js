@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 
-function GetBooks() {
+function GetBooks(onDelete) {
   const[books, setBook] = useState([]);
   const[bookerror, setError] = useState('Fetching');
 
@@ -32,10 +32,11 @@ function GetBooks() {
       { 
         books.map(book => {
           return (
-             <p key={book.id}>
+             <p key={book.id}  >
                   Title: { book.title.toUpperCase() }<br />
                   Author: { book.author }<br />
                   Description: { book.description }<br />
+                  id: {book.id}
              </p>
           )
         })
