@@ -15,22 +15,24 @@ function AddBook () {
             'title': book.title, 'author': book.author, 'description': book.description
         }
 
-    axios.post('http://localhost:8080/kirja/add', formData)
-        .then(response => {
-            if (response.status === 200) {
+        axios.post('http://localhost:8080/kirja/add', formData)
+            .then(response => {
+              if (response.status === 200) {
                 setValues( {title: '', author: '', description: ''});
                 setError('Book added!')
-            } else {
+                window.location.reload(false);
+              } else {
                 setError('Adding book failed...')
             }
         }) 
     }
 
-    const clearform = (e) => {
-        e.preventDefault();
-        setValues( {title: '', author: '', description: ''} );
-        setError('Form cleared!')
-    }
+  const clearform = (e) => {
+      e.preventDefault();
+      setValues( {title: '', author: '', description: ''} );
+      setError('Form cleared!')
+      window.location.reload(false);
+  }
 
     const change = (e) => {
         setValues({
@@ -42,7 +44,6 @@ function AddBook () {
       return (
         <Paper style={ {padding:'10px', margin:'30px'} }>
         <form>
-
           <TextField label='Title' name='title' value={ book.title }
           onChange={ change } margin='normal' required fullWidth />
           <TextField label='Author' name='author' value={ book.author }

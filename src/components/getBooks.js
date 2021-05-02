@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
+import axios from 'axios';
+import Button from '@material-ui/core/Button';
 
-function GetBooks(onDelete) {
+function GetBooks() {
   const[books, setBook] = useState([]);
   const[bookerror, setError] = useState('Fetching');
+  const[currentBook, setCurrentBook] = useState(books);
 
   const getAllBooks = async () => {
     try {
@@ -15,6 +18,27 @@ function GetBooks(onDelete) {
     } catch {
       setBook([]);
       setError('Fetching book information failed');
+    }
+  }
+  
+  const deleteRow = (id, e) => {  
+    axios.delete(`http://localhost:8080/kirja/delete/${id}`)  
+      .then(res => {  
+        console.log(res);  
+        console.log(res.data);
+        setBook(books.filter((book) => book.id!== id))
+      })
+  }
+
+  const editBook = (e, id) => {
+    const kirjaid = id;
+    try {
+      const response = fetch(`http://localhost:8080/kirja/${kirjaid}`);
+      const json = response.json();
+      setError(json);
+      
+    } catch {
+      setError('poop');
     }
   }
 
@@ -36,7 +60,8 @@ function GetBooks(onDelete) {
                   Title: { book.title.toUpperCase() }<br />
                   Author: { book.author }<br />
                   Description: { book.description }<br />
-                  id: {book.id}
+                  <Button variant='contained' onClick={(e) => editBook(book.id, e)}color='primary'>Edit</Button>
+                  <Button variant='contained' onClick={(e) => deleteRow(book.id, e)} color='secondary'>Delete</Button>
              </p>
           )
         })

@@ -68,6 +68,17 @@ app.post('/kirja/add', upload.none() ,(req, res, next) => {
 	});
 })
 
+app.put('/kirja/update', upload.none() ,(req, res, next) => {
+	let kirja = req.body;
+
+    db.run('UPDATE kirja SET title=(?), author=(?), description=(?) WHERE id=?',
+  		[kirja.title, kirja.author, kirja.description], (error, result) => {
+		if (error) throw error;
+
+		return res.status(200).json( {count: 1} );
+	});
+})
+
 // Virheellisten pyyntöjen hallinta
 app.get('*', (req, res, next) => {
     return res.status(404).json({ error: true, message: 'Virheellinen pyyntö'})
